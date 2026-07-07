@@ -1,0 +1,11 @@
+{
+  "name": "satellite-apps",
+  "private": true,
+  "packageManager": "pnpm@11.7.0",
+  "scripts": {
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test",
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run test"
+  }
+}
