@@ -132,7 +132,7 @@ Never show an ad during the core active experience.
 
 Mark only what v1 needs:
 
-- [ ] Audio
+- [x] Audio
 - [x] Landscape orientation
 - [x] Keep awake
 - [ ] Local notifications
@@ -143,13 +143,14 @@ Mark only what v1 needs:
 Notes:
 
 The active session screen should prefer landscape orientation and keep the screen awake while a session is active. Restore normal orientation behavior after leaving the active session.
+Play a short, non-looping bell once when a countdown session reaches zero. Do not repeat it during overtime.
 
 ## 9. Branding and Assets
 
 - **Primary visual direction:** High-contrast, calm presentation timer with large typography and clear state colors.
 - **Free themes/backgrounds:** Light, dark, and high-contrast basic timer themes.
 - **Plus themes/backgrounds:** Additional presentation-friendly themes for future release.
-- **Audio pack:** None for v1.
+- **Audio pack:** One bundled end-of-session bell for countdown completion.
 
 All assets must be original, public-domain, or correctly licensed. Record licensing in `assets/LICENSES.md`.
 

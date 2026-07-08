@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useKeepAwake } from 'expo-keep-awake';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getTimerSnapshot } from '../../domain/services/timerEngine';
 import { AppButton } from '../components/AppButton';
 import { TimerDisplay } from '../components/TimerDisplay';
+import { useEndBellSound } from '../hooks/useEndBellSound';
 import { useMeetingClock } from '../hooks/useMeetingClock';
 import { colors, levelColors, spacing, typography } from '../theme/colors';
 
@@ -23,6 +24,8 @@ export function SessionScreen() {
     completeActiveSession,
     resetActiveSession,
   } = useMeetingClock();
+  const playEndBell = useEndBellSound();
+  const playedEndBellForSession = useRef<string | null>(null);
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -41,6 +44,19 @@ export function SessionScreen() {
     () => (activeSession ? getTimerSnapshot(activeSession, now) : null),
     [activeSession, now],
   );
+
+  useEffect(() => {
+    if (
+      activeSession?.mode === 'countdown' &&
+      activeSession.status === 'running' &&
+      snapshot &&
+      snapshot.remainingSeconds <= 0 &&
+      playedEndBellForSession.current !== activeSession.id
+    ) {
+      playedEndBellForSession.current = activeSession.id;
+      playEndBell();
+    }
+  }, [activeSession?.id, activeSession?.mode, activeSession?.status, playEndBell, snapshot]);
 
   if (!activeSession || !snapshot) {
     return (

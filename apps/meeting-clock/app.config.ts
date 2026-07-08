@@ -27,8 +27,16 @@ const config: ExpoConfig = {
   },
   plugins: [
     'expo-router',
+    'expo-asset',
     'expo-localization',
     'expo-sqlite',
+    [
+      'expo-audio',
+      {
+        microphonePermission: false,
+        recordAudioAndroid: false,
+      },
+    ],
     [
       'expo-splash-screen',
       {
