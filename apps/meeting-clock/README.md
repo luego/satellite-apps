@@ -1,14 +1,14 @@
 # MeetingClock
 
-MeetingClock turns an Android phone into a large landscape timer for meetings, workshops, classes, and presentations.
+MeetingClock turns an iPhone into a large landscape timer for meetings, workshops, classes, and presentations.
 
 ## Workspace
 
 - Package: `@satellite/meeting-clock`
 - Directory: `apps/meeting-clock`
-- Android package: `com.luegodev.meetingclock`
+- iOS bundle identifier: `com.luegodev.meetingclock`
 - Expo SDK: `57`
-- Platform for v1: Android
+- Platform for v1: iOS
 
 ## Core Flow
 
@@ -24,7 +24,7 @@ The core timer works offline. Settings, language preference, mock Plus state, an
 
 ## Monetization Status
 
-Real AdMob and RevenueCat integrations are intentionally not configured yet. The app contains app-local development interfaces and mock adapters for ads and Plus entitlements.
+AdMob is wired for iOS development builds, with test ads enabled by default. RevenueCat is intentionally not configured yet; the app contains app-local development interfaces and mock adapters for Plus entitlements.
 
 ## Commands
 
@@ -32,6 +32,7 @@ Run from the repository root:
 
 ```bash
 pnpm --filter @satellite/meeting-clock start
+pnpm --filter @satellite/meeting-clock ios
 pnpm --filter @satellite/meeting-clock typecheck
 pnpm --filter @satellite/meeting-clock lint
 pnpm --filter @satellite/meeting-clock test

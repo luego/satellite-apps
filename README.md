@@ -1,6 +1,6 @@
 # Satellite Apps
 
-Android-first Expo applications collected in a plain pnpm workspace.
+iOS-first Expo applications collected in a plain pnpm workspace.
 
 ## Workspace Layout
 

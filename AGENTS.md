@@ -8,7 +8,7 @@
 
 ## 1. Purpose
 
-This repository contains multiple small, Android-first Expo applications.
+This repository contains multiple small, iOS-first Expo applications.
 
 The goals are:
 
@@ -55,10 +55,10 @@ Before changing dependencies, Expo configuration, native modules, builds, ads, o
 - Expo Keep Awake: https://docs.expo.dev/versions/latest/sdk/keep-awake/
 - Expo Localization: https://docs.expo.dev/versions/latest/sdk/localization/
 - pnpm workspaces: https://pnpm.io/workspaces
-- Google Mobile Ads Android: https://developers.google.com/admob/android/quick-start
+- Google Mobile Ads iOS: https://developers.google.com/admob/ios/quick-start
 - React Native Google Mobile Ads: https://docs.page/invertase/react-native-google-mobile-ads
 - RevenueCat Expo: https://www.revenuecat.com/docs/getting-started/installation/expo
-- Google Play policies: https://support.google.com/googleplay/android-developer/
+- App Store Review Guidelines: https://developer.apple.com/app-store/review/guidelines/
 
 Rules:
 
@@ -212,8 +212,8 @@ Each app owns:
 - Product-specific domain logic
 - SQLite schema and migrations
 - Branding, icons, splash screen, backgrounds, and sounds
-- Android package/application ID
-- App Store/Play Store metadata
+- iOS bundle identifier
+- App Store metadata
 - AdMob app and unit IDs
 - RevenueCat public SDK key, offering, and product mapping
 - Privacy copy and data-safety declarations
@@ -737,7 +737,7 @@ Design for speed and clarity.
 - Respect system font scaling
 - Do not communicate status only with color
 - Add accessibility labels to icon-only controls
-- Support small Android screens
+- Support small iPhone screens
 - Support dark mode when it does not double implementation time
 - Keep active timer/session screens visually quiet
 - Prevent screen sleep only while required
@@ -816,7 +816,7 @@ The shared package must not contain product-specific text from individual apps.
 - Use locale-aware formatting through `Intl` or a small shared formatter.
 - Do not manually format dates as fixed US or Latin American strings.
 - Keep brand names and product names untranslated unless the app brief explicitly requires localized names.
-- App Store and Play Store listing translations remain app-specific release work.
+- App Store listing translations remain app-specific release work.
 
 ### Suggested port
 
@@ -863,7 +863,7 @@ Every app must include a Privacy screen that states:
 
 Do not request permissions that are unnecessary for the core feature.
 
-Privacy and Play Console declarations are app-specific, even when SDK wrappers are shared.
+Privacy and App Store Connect declarations are app-specific, even when SDK wrappers are shared.
 
 ---
 
@@ -903,8 +903,8 @@ Focus tests on code that can break revenue or the core experience.
 - Restore purchase
 - No ads for Plus/lifetime users
 - Airplane mode
-- Small Android screen
-- Android back button behavior
+- Small iPhone screen
+- iOS navigation/back behavior
 
 When a shared package changes, run its tests and the checks for every app that consumes it.
 
@@ -954,11 +954,11 @@ Suggested app variables:
 
 ```bash
 EXPO_PUBLIC_ENV=development
-EXPO_PUBLIC_ADMOB_ANDROID_APP_ID=
-EXPO_PUBLIC_ADMOB_BANNER_ID=
-EXPO_PUBLIC_ADMOB_INTERSTITIAL_ID=
-EXPO_PUBLIC_ADMOB_REWARDED_ID=
-EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY=
+EXPO_PUBLIC_ADMOB_IOS_APP_ID=
+EXPO_PUBLIC_ADMOB_IOS_BANNER_ID=
+EXPO_PUBLIC_ADMOB_IOS_INTERSTITIAL_ID=
+EXPO_PUBLIC_ADMOB_IOS_REWARDED_ID=
+EXPO_PUBLIC_REVENUECAT_IOS_API_KEY=
 EXPO_PUBLIC_ENABLE_MOCK_PURCHASES=true
 EXPO_PUBLIC_ENABLE_TEST_ADS=true
 ```
@@ -1057,7 +1057,7 @@ Run from the app directory:
 
 ```bash
 cd apps/<app-slug>
-eas build --profile development --platform android
+eas build --profile development --platform ios
 ```
 
 Each EAS-enabled app keeps its own `eas.json` and related build files in that app's directory.
@@ -1110,7 +1110,7 @@ Start locally inside the first app. Extract only when a second app needs the sam
 
 A feature is done only when:
 
-- The happy path works on a physical Android device.
+- The happy path works on a physical iPhone.
 - Empty and error states exist.
 - Relevant tests pass.
 - No TypeScript or lint errors remain.
@@ -1136,8 +1136,8 @@ A shared package change is done only when:
 An app is release-ready only when:
 
 - `expo-doctor` passes for that app.
-- The production Android build succeeds.
-- Play Console “contains ads” declaration is correct.
+- The production iOS build succeeds.
+- App Store Connect ad/privacy declarations are correct.
 - Privacy policy is published.
 - Data safety form matches actual SDK behavior.
 - Subscription cancellation/manage link is accessible.
@@ -1220,7 +1220,7 @@ For a new app:
 9. Add development mock ads and entitlements.
 10. Add real AdMob/RevenueCat adapters only after core checks pass.
 11. Run app typecheck, lint, tests, and Expo Doctor.
-12. Build a development Android version when native modules are introduced.
+12. Build a development iOS version when native modules are introduced.
 13. Update the app README and `APP.md`.
 14. Report:
     - Workspaces changed
@@ -1238,7 +1238,7 @@ For a new app:
 Use this after creating the target app's `APP.md`:
 
 ```text
-Build the Android-first Expo application described in:
+Build the iOS-first Expo application described in:
 
 - The root AGENTS.md
 - apps/<app-slug>/APP.md

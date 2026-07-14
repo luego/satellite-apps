@@ -4,20 +4,20 @@
 
 - **App name:** `MeetingClock`
 - **Workspace package:** `@satellite/meeting-clock`
-- **Android package:** `com.luegodev.meetingclock`
+- **iOS bundle identifier:** `com.luegodev.meetingclock`
 - **Version-one languages:** English and Spanish
 - **Initial language behavior:** Automatic from phone settings, with English fallback
 - **User override:** Automatic / English / Español
-- **Supported platform:** Android
+- **Supported platform:** iOS
 - **Target implementation time:** 1–2 focused development days
 
 ## 2. Product
 
-- **One-sentence promise:** MeetingClock turns an Android phone into a large, readable landscape timer for meetings and presentations.
+- **One-sentence promise:** MeetingClock turns an iPhone into a large, readable landscape timer for meetings and presentations.
 - **Primary user:** Facilitators, presenters, teachers, coaches, and meeting hosts who need visible timing without a laptop setup.
 - **Problem solved:** People lose time awareness in meetings and talks when the timer is tiny, distracting, or buried in another device.
 - **Core action:** Choose a duration, start the timer, and read the remaining or overtime time from across the room.
-- **Thirty-second value moment:** A new user can pick a preset, tap Start, rotate the phone, and see a large color-coded timer.
+- **Thirty-second value moment:** A new user can pick a preset, tap Start, rotate the iPhone, and see a large color-coded timer.
 
 ### Required v1 workflow
 
@@ -34,7 +34,7 @@
 - AI features
 - Social/community features
 - Web dashboard
-- Real ads, real purchases, remote analytics, shared rooms, speaker queues, and cloud backups
+- Production ads, real purchases, remote analytics, shared rooms, speaker queues, and cloud backups
 
 ## 3. Screens
 
@@ -201,4 +201,4 @@ App-specific acceptance criteria:
 - **Primary keyword/theme:** meeting timer
 - **Differentiator:** Fast offline setup with room-readable warning, critical, and overtime states.
 
-This section guides product copy only. Validate final Play Store metadata separately before release.
+This section guides product copy only. Validate final App Store metadata separately before release.
