@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import type { MeetingTimerSession } from '../domain/entities/MeetingTimer';
 import { createTimerSession, endSession, pauseSession, resumeSession } from '../domain/services/timerEngine';
-import { MockAdsGateway } from '../infrastructure/ads/MockAdsGateway';
+import { GoogleMobileAdsGateway } from '../infrastructure/ads/GoogleMobileAdsGateway';
 import { SystemClock } from '../infrastructure/clock/SystemClock';
 import { SQLiteSessionRepository } from '../infrastructure/database/SQLiteSessionRepository';
 import { ExpoLocaleSource } from '../infrastructure/localization/ExpoLocaleSource';
@@ -47,7 +47,10 @@ export function MeetingClockProvider({ children }: PropsWithChildren) {
   const sessionRepository = useMemo(() => new SQLiteSessionRepository(), []);
   const localeSource = useMemo(() => new ExpoLocaleSource(), []);
   const clock = useMemo(() => new SystemClock(), []);
-  const adsGateway = useMemo(() => new MockAdsGateway(), []);
+  const adsGateway = useMemo(
+    () => new GoogleMobileAdsGateway(settingsRepository),
+    [settingsRepository],
+  );
   const entitlementGateway = useMemo(
     () => new MockEntitlementGateway(settingsRepository),
     [settingsRepository],
@@ -177,7 +180,14 @@ export function MeetingClockProvider({ children }: PropsWithChildren) {
       await sessionRepository.prune(limit);
       setActiveSession(null);
       await refreshHistory();
-      await adsGateway.showInterstitialAtNaturalBreak(plus);
+
+      if (outcome === 'completed') {
+        await adsGateway.showInterstitialAtNaturalBreak({
+          completedSessionCount: await sessionRepository.countCompleted(),
+          isPlus: plus,
+          now: clock.now(),
+        });
+      }
     },
     [activeSession, adsGateway, clock, entitlementGateway, refreshHistory, sessionRepository],
   );

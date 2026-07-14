@@ -29,3 +29,5 @@ yarn-error.log*
 
 # TypeScript
 *.tsbuildinfo
+
+apps/meeting-clock/.gitignore:34:.env*.local

@@ -1,5 +1,10 @@
 import type { ExpoConfig } from 'expo/config';
 
+const enableTestAds = process.env.EXPO_PUBLIC_ENABLE_TEST_ADS !== 'false';
+const googleMobileAdsAndroidAppId = enableTestAds
+  ? 'ca-app-pub-3940256099942544~3347511713'
+  : process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID;
+
 const config: ExpoConfig = {
   name: 'MeetingClock',
   slug: 'meeting-clock',
@@ -35,6 +40,14 @@ const config: ExpoConfig = {
       {
         microphonePermission: false,
         recordAudioAndroid: false,
+      },
+    ],
+    [
+      'react-native-google-mobile-ads',
+      {
+        androidAppId: googleMobileAdsAndroidAppId,
+        optimizeInitialization: true,
+        optimizeAdLoading: true,
       },
     ],
     [

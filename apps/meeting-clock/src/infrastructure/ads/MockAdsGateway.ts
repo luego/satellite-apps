@@ -1,4 +1,4 @@
-import type { AdsGateway } from '../../application/ports/AdsGateway';
+import type { AdsGateway, InterstitialNaturalBreak } from '../../application/ports/AdsGateway';
 
 export class MockAdsGateway implements AdsGateway {
   async initialize(): Promise<void> {}
@@ -7,7 +7,7 @@ export class MockAdsGateway implements AdsGateway {
     return !isPlus;
   }
 
-  async showInterstitialAtNaturalBreak(isPlus: boolean): Promise<boolean> {
+  async showInterstitialAtNaturalBreak({ isPlus }: InterstitialNaturalBreak): Promise<boolean> {
     return !isPlus;
   }
 }

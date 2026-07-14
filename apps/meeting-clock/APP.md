@@ -122,8 +122,8 @@ Do not hard-code prices in purchase UI. Display localized prices returned by the
 
 ## 7. Ads
 
-- **Banner locations:** Timer setup, history, settings, and paywall only
-- **Interstitial natural break:** After a completed session, never during an active timer
+- **Banner locations:** Timer setup, history, and settings only
+- **Interstitial natural break:** After every three completed sessions, never during the first two sessions, at least ten minutes apart, and never during an active timer
 - **Rewarded unlock:** None for v1
 
 Never show an ad during the core active experience.

@@ -27,9 +27,7 @@ export function ScreenShell({ title, subtitle, children, showBottomNav = true }:
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.appBar}>
-          <Text style={styles.menu}>≡</Text>
           <Text style={styles.brand}>MeetingClock</Text>
-          <Text style={styles.profile}>◎</Text>
         </View>
         <View style={styles.header}>
           <Text style={styles.title}>{title}</Text>
@@ -69,22 +67,12 @@ const styles = StyleSheet.create({
   },
   appBar: {
     alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  menu: {
-    color: colors.primarySoft,
-    fontSize: 18,
-    fontWeight: '900',
+    justifyContent: 'center',
   },
   brand: {
     color: colors.ink,
     ...typography.labelLg,
     fontSize: 16,
-  },
-  profile: {
-    color: colors.ink,
-    fontSize: 18,
   },
   header: {
     gap: 6,

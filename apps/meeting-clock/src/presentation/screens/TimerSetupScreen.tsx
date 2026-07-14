@@ -11,7 +11,7 @@ import {
 
 import { PRESET_DURATIONS_SECONDS } from "../../shared/constants/timer";
 import { formatClock, formatMinutes } from "../../shared/formatting/time";
-import { AdBannerPlaceholder } from "../components/AdBannerPlaceholder";
+import { AdBannerSlot } from "../components/AdBannerSlot";
 import { AppButton } from "../components/AppButton";
 import { ChoiceChip } from "../components/ChoiceChip";
 import { ScreenShell } from "../components/ScreenShell";
@@ -29,7 +29,7 @@ const sanitizeNumericInput = (value: string) => value.replace(/[^0-9]/g, "");
 
 export function TimerSetupScreen() {
   const router = useRouter();
-  const { t, timerConfig, startSession, history } = useMeetingClock();
+  const { t, timerConfig, startSession, history, locale } = useMeetingClock();
   const [durationSeconds, setDurationSeconds] = useState(
     timerConfig.durationSeconds,
   );
@@ -197,7 +197,7 @@ export function TimerSetupScreen() {
         {history.slice(0, 2).map((session) => (
           <View key={session.id} style={styles.recentRow}>
             <View style={styles.recentIcon}>
-              <Text style={styles.recentIconText}>↺</Text>
+              <Text style={styles.recentIconText}>›</Text>
             </View>
             <View style={styles.recentCopy}>
               <Text style={styles.recentTitle}>
@@ -209,7 +209,12 @@ export function TimerSetupScreen() {
                 {formatClock(session.durationSeconds)}
               </Text>
             </View>
-            <Text style={styles.chevron}>›</Text>
+            <Text style={styles.recentTitle}>
+              {new Intl.DateTimeFormat(locale, {
+                dateStyle: "medium",
+                timeStyle: "short",
+              }).format(new Date(session.endedAt ?? session.startedAt))}
+            </Text>
           </View>
         ))}
       </View>
@@ -218,7 +223,7 @@ export function TimerSetupScreen() {
         <AppButton label={t("startTimer")} onPress={start} />
       </View>
 
-      <AdBannerPlaceholder />
+      <AdBannerSlot placement="setup" />
     </ScreenShell>
   );
 }

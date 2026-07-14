@@ -1,7 +1,7 @@
 import { StyleSheet, Switch, Text, View } from 'react-native';
 
 import type { LanguagePreference } from '../../localization';
-import { AdBannerPlaceholder } from '../components/AdBannerPlaceholder';
+import { AdBannerSlot } from '../components/AdBannerSlot';
 import { ChoiceChip } from '../components/ChoiceChip';
 import { ScreenShell } from '../components/ScreenShell';
 import { useMeetingClock } from '../hooks/useMeetingClock';
@@ -66,7 +66,7 @@ export function SettingsScreen() {
         <Switch value={isPlus} onValueChange={setMockPlus} />
       </View>
 
-      <AdBannerPlaceholder />
+      <AdBannerSlot placement="settings" />
     </ScreenShell>
   );
 }

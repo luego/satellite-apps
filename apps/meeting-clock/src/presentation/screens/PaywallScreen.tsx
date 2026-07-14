@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { AdBannerPlaceholder } from '../components/AdBannerPlaceholder';
 import { ScreenShell } from '../components/ScreenShell';
 import { useMeetingClock } from '../hooks/useMeetingClock';
 import { colors, radii, shadows, spacing, typography } from '../theme/colors';
@@ -14,7 +13,6 @@ export function PaywallScreen() {
         <Text style={styles.body}>{t('paywallBody')}</Text>
         <Text style={styles.note}>{t('paywallMockNote')}</Text>
       </View>
-      <AdBannerPlaceholder />
     </ScreenShell>
   );
 }
