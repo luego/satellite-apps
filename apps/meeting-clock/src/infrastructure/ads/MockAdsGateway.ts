@@ -3,7 +3,7 @@ import type { AdsGateway, InterstitialNaturalBreak } from '../../application/por
 export class MockAdsGateway implements AdsGateway {
   async initialize(): Promise<void> {}
 
-  async canShowBanner(isPlus: boolean): Promise<boolean> {
+  async canShowAds(isPlus: boolean): Promise<boolean> {
     return !isPlus;
   }
 

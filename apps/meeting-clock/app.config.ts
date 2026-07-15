@@ -1,9 +1,8 @@
 import type { ExpoConfig } from 'expo/config';
 
-const enableTestAds = process.env.EXPO_PUBLIC_ENABLE_TEST_ADS !== 'false';
-const googleMobileAdsIosAppId = enableTestAds
-  ? 'ca-app-pub-3940256099942544~1458002511'
-  : process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID;
+const googleMobileAdsIosAppId =
+  process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID || 'ca-app-pub-3940256099942544~1458002511';
+const googleMobileAdsAndroidTestAppId = 'ca-app-pub-3940256099942544~3347511713';
 
 const config: ExpoConfig = {
   name: 'MeetingClock',
@@ -36,6 +35,8 @@ const config: ExpoConfig = {
     [
       'react-native-google-mobile-ads',
       {
+        // The plugin validates both platform IDs even though this app declares iOS only.
+        androidAppId: googleMobileAdsAndroidTestAppId,
         iosAppId: googleMobileAdsIosAppId,
         optimizeInitialization: true,
         optimizeAdLoading: true,

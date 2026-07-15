@@ -19,3 +19,4 @@ minimumReleaseAgeExclude:
   - expo-modules-jsi@57.0.1
   - expo-router@57.0.4
   - expo@57.0.4
+  - expo-sqlite@57.0.1

@@ -6,6 +6,6 @@ export interface InterstitialNaturalBreak {
 
 export interface AdsGateway {
   initialize(): Promise<void>;
-  canShowBanner(isPlus: boolean): Promise<boolean>;
+  canShowAds(isPlus: boolean): Promise<boolean>;
   showInterstitialAtNaturalBreak(options: InterstitialNaturalBreak): Promise<boolean>;
 }

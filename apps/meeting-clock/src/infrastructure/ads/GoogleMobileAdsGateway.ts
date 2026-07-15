@@ -30,7 +30,7 @@ export class GoogleMobileAdsGateway implements AdsGateway {
     this.initialized = true;
   }
 
-  async canShowBanner(isPlus: boolean): Promise<boolean> {
+  async canShowAds(isPlus: boolean): Promise<boolean> {
     return !isPlus && hasAdMobRuntimeConfig();
   }
 

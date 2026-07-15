@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { formatClock } from '../../shared/formatting/time';
-import { AdBannerSlot } from '../components/AdBannerSlot';
+import { AdNativeSlot } from '../components/AdNativeSlot';
 import { ChoiceChip } from '../components/ChoiceChip';
 import { ScreenShell } from '../components/ScreenShell';
 import { useMeetingClock } from '../hooks/useMeetingClock';
@@ -60,7 +60,7 @@ export function HistoryScreen() {
           </View>
         ))
       )}
-      <AdBannerSlot placement="history" />
+      <AdNativeSlot placement="history" />
     </ScreenShell>
   );
 }

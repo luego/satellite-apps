@@ -11,7 +11,7 @@ import {
 
 import { PRESET_DURATIONS_SECONDS } from "../../shared/constants/timer";
 import { formatClock, formatMinutes } from "../../shared/formatting/time";
-import { AdBannerSlot } from "../components/AdBannerSlot";
+import { AdNativeSlot } from "../components/AdNativeSlot";
 import { AppButton } from "../components/AppButton";
 import { ChoiceChip } from "../components/ChoiceChip";
 import { ScreenShell } from "../components/ScreenShell";
@@ -223,7 +223,7 @@ export function TimerSetupScreen() {
         <AppButton label={t("startTimer")} onPress={start} />
       </View>
 
-      <AdBannerSlot placement="setup" />
+      <AdNativeSlot placement="setup" />
     </ScreenShell>
   );
 }

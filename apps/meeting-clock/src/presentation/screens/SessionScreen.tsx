@@ -125,7 +125,9 @@ function SessionControl({ label, symbol, onPress, danger = false }: SessionContr
       ]}
     >
       <Text style={[styles.controlSymbol, danger ? styles.controlSymbolDanger : null]}>{symbol}</Text>
-      <Text style={styles.controlLabel}>{label}</Text>
+      <Text adjustsFontSizeToFit numberOfLines={1} style={styles.controlLabel}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -137,14 +139,15 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     justifyContent: 'space-between',
     paddingHorizontal: spacing.gutter,
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.xs,
   },
   controls: {
     alignItems: 'center',
+    flexShrink: 0,
     flexDirection: 'row',
     gap: spacing.sm,
     justifyContent: 'center',
-    paddingBottom: spacing.xs,
+    paddingBottom: 0,
   },
   controlButton: {
     alignItems: 'center',
@@ -152,8 +155,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(191, 194, 255, 0.22)',
     borderRadius: 16,
     borderWidth: 1,
-    minHeight: 56,
-    minWidth: 82,
+    minHeight: 52,
+    minWidth: 78,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
   },

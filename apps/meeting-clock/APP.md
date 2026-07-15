@@ -34,7 +34,7 @@
 - AI features
 - Social/community features
 - Web dashboard
-- Production ads, real purchases, remote analytics, shared rooms, speaker queues, and cloud backups
+- Production ads, remote analytics, shared rooms, speaker queues, and cloud backups
 
 ## 3. Screens
 
@@ -53,7 +53,7 @@ Optional screen:
 
 ## 4. Local Data
 
-- **Simple settings:** warning threshold, critical threshold, count direction, theme, mock Plus override, language preference (`automatic`, `en`, or `es`)
+- **Simple settings:** warning threshold, critical threshold, count direction, theme, Plus/mock Plus state, language preference (`automatic`, `en`, or `es`)
 - **SQLite entities:** completed or reset timer sessions
 - **History retention for free users:** latest 20 sessions
 - **History retention for Plus users:** latest 200 sessions
@@ -120,9 +120,15 @@ All user-facing text, validation, errors, empty states, paywall copy, privacy co
 
 Do not hard-code prices in purchase UI. Display localized prices returned by the store/RevenueCat.
 
+RevenueCat configuration:
+
+- Entitlement: `plus`
+- Current offering: configured in RevenueCat; app can optionally target `EXPO_PUBLIC_REVENUECAT_OFFERING_ID`
+- Local development defaults to mock purchases while `EXPO_PUBLIC_ENABLE_MOCK_PURCHASES=true`
+
 ## 7. Ads
 
-- **Banner locations:** Timer setup, history, and settings only
+- **Native ad locations:** Timer setup, history, and settings only
 - **Interstitial natural break:** After every three completed sessions, never during the first two sessions, at least ten minutes apart, and never during an active timer
 - **Rewarded unlock:** None for v1
 
