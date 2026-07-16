@@ -17,6 +17,11 @@ const config: ExpoConfig = {
     bundleIdentifier: 'com.luegodev.meetingclock',
     icon: './assets/expo.icon',
   },
+  extra: {
+    eas: {
+      projectId: 'e01a3a54-8d29-4a72-8563-fdeaea1b1ce0',
+    },
+  },
   web: {
     output: 'static',
     favicon: './assets/images/favicon.png',
