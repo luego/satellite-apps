@@ -7,8 +7,10 @@ import { Platform } from 'react-native';
 
 import type {
   EntitlementGateway,
+  PlusEntitlementStatus,
   PlusPurchaseOption,
   PlusPurchaseOptionId,
+  PlusStatusOptions,
 } from '../../application/ports/EntitlementGateway';
 import {
   REVENUECAT_PRODUCT_IDS,
@@ -33,17 +35,38 @@ export class RevenueCatEntitlementGateway implements EntitlementGateway {
       return;
     }
 
-    const module = await import('react-native-purchases');
-    const Purchases = module.default;
-    await Purchases.setLogLevel(module.LOG_LEVEL.DEBUG);
-    Purchases.configure({ apiKey: this.apiKey });
-    this.purchases = Purchases;
-    this.configured = true;
+    try {
+      const module = await import('react-native-purchases');
+      const Purchases = module.default;
+      await Purchases.setLogLevel(module.LOG_LEVEL.DEBUG);
+      Purchases.configure({ apiKey: this.apiKey });
+      this.purchases = Purchases;
+      this.configured = true;
+    } catch {
+      this.purchases = null;
+      this.configured = false;
+    }
   }
 
   async isPlus(): Promise<boolean> {
     const customerInfo = await this.getCustomerInfo();
     return Boolean(customerInfo?.entitlements.active[this.plusEntitlementId]);
+  }
+
+  async getPlusStatus(options: PlusStatusOptions = {}): Promise<PlusEntitlementStatus> {
+    const customerInfo = await this.getCustomerInfo(options);
+    const entitlement =
+      customerInfo?.entitlements.active[this.plusEntitlementId] ??
+      customerInfo?.entitlements.all[this.plusEntitlementId] ??
+      null;
+
+    return {
+      isPlus: Boolean(entitlement?.isActive),
+      willRenew: entitlement?.willRenew ?? null,
+      expiresAt: entitlement?.expirationDate ?? null,
+      unsubscribeDetectedAt: entitlement?.unsubscribeDetectedAt ?? null,
+      managementUrl: customerInfo?.managementURL ?? null,
+    };
   }
 
   async listPlusPurchaseOptions(): Promise<PlusPurchaseOption[]> {
@@ -90,9 +113,14 @@ export class RevenueCatEntitlementGateway implements EntitlementGateway {
     return Boolean(customerInfo.entitlements.active[this.plusEntitlementId]);
   }
 
-  private async getCustomerInfo(): Promise<CustomerInfo | null> {
+  private async getCustomerInfo(options: PlusStatusOptions = {}): Promise<CustomerInfo | null> {
     try {
       const Purchases = await this.requirePurchases();
+
+      if (options.forceRefresh) {
+        await Purchases.invalidateCustomerInfoCache().catch(() => undefined);
+      }
+
       return Purchases.getCustomerInfo();
     } catch {
       return null;

@@ -1,5 +1,6 @@
 import type {
   EntitlementGateway,
+  PlusEntitlementStatus,
   PlusPurchaseOption,
   PlusPurchaseOptionId,
 } from '../../application/ports/EntitlementGateway';
@@ -14,6 +15,18 @@ export class MockEntitlementGateway implements EntitlementGateway {
 
   async isPlus(): Promise<boolean> {
     return (await this.settingsRepository.get<boolean>(STORAGE_KEYS.mockPlus)) ?? false;
+  }
+
+  async getPlusStatus(): Promise<PlusEntitlementStatus> {
+    const isPlus = await this.isPlus();
+
+    return {
+      isPlus,
+      willRenew: isPlus,
+      expiresAt: null,
+      unsubscribeDetectedAt: null,
+      managementUrl: null,
+    };
   }
 
   async listPlusPurchaseOptions(): Promise<PlusPurchaseOption[]> {

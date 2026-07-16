@@ -1,8 +1,12 @@
 import type { PropsWithChildren } from 'react';
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, AppState, Linking, StyleSheet, Text, View } from 'react-native';
 
-import type { PlusPurchaseOption, PlusPurchaseOptionId } from '../application/ports/EntitlementGateway';
+import type {
+  PlusEntitlementStatus,
+  PlusPurchaseOption,
+  PlusPurchaseOptionId,
+} from '../application/ports/EntitlementGateway';
 import type { MeetingTimerSession } from '../domain/entities/MeetingTimer';
 import { createTimerSession, endSession, pauseSession, resumeSession } from '../domain/services/timerEngine';
 import { GoogleMobileAdsGateway } from '../infrastructure/ads/GoogleMobileAdsGateway';
@@ -19,8 +23,26 @@ import { STORAGE_KEYS } from '../shared/constants/storageKeys';
 import { canUseRevenueCat } from '../shared/config/revenueCat';
 import { colors } from '../presentation/theme/colors';
 
-export type PurchaseStatus = 'idle' | 'loading' | 'purchased' | 'restored' | 'cancelled' | 'unavailable' | 'error';
+export type PurchaseStatus =
+  | 'idle'
+  | 'loading'
+  | 'purchased'
+  | 'restored'
+  | 'cancelled'
+  | 'unavailable'
+  | 'managementOpened'
+  | 'managementUnavailable'
+  | 'statusRefreshed'
+  | 'error';
 export type PurchasesMode = 'mock' | 'revenuecat';
+
+const emptyPlusStatus: PlusEntitlementStatus = {
+  isPlus: false,
+  willRenew: null,
+  expiresAt: null,
+  unsubscribeDetectedAt: null,
+  managementUrl: null,
+};
 
 interface MeetingClockContextValue {
   ready: boolean;
@@ -40,11 +62,14 @@ interface MeetingClockContextValue {
   resetActiveSession: () => Promise<void>;
   refreshHistory: () => Promise<void>;
   isPlus: boolean;
+  plusStatus: PlusEntitlementStatus;
   plusPurchaseOptions: PlusPurchaseOption[];
   purchaseStatus: PurchaseStatus;
   purchasesMode: PurchasesMode;
   purchasePlus: (optionId: PlusPurchaseOptionId) => Promise<void>;
   restorePurchases: () => Promise<void>;
+  manageSubscription: () => Promise<void>;
+  refreshPurchaseStatus: (options?: { showFeedback?: boolean }) => Promise<void>;
   setMockPlus: (value: boolean) => Promise<void>;
   canShowAds: boolean;
 }
@@ -79,6 +104,7 @@ export function MeetingClockProvider({ children }: PropsWithChildren) {
   const [activeSession, setActiveSession] = useState<MeetingTimerSession | null>(null);
   const [history, setHistory] = useState<MeetingTimerSession[]>([]);
   const [isPlus, setIsPlus] = useState(false);
+  const [plusStatus, setPlusStatus] = useState<PlusEntitlementStatus>(emptyPlusStatus);
   const [canShowAds, setCanShowAds] = useState(false);
   const [plusPurchaseOptions, setPlusPurchaseOptions] = useState<PlusPurchaseOption[]>([]);
   const [purchaseStatus, setPurchaseStatus] = useState<PurchaseStatus>('idle');
@@ -89,8 +115,10 @@ export function MeetingClockProvider({ children }: PropsWithChildren) {
     setHistory(await sessionRepository.listRecent(limit));
   }, [entitlementGateway, sessionRepository]);
 
-  const refreshEntitlements = useCallback(async () => {
-    const plus = await entitlementGateway.isPlus();
+  const refreshEntitlements = useCallback(async (options: { forceRefresh?: boolean } = {}) => {
+    const status = await entitlementGateway.getPlusStatus({ forceRefresh: options.forceRefresh });
+    const plus = status.isPlus;
+    setPlusStatus(status);
     setIsPlus(plus);
     setCanShowAds(await adsGateway.canShowAds(plus));
     setPlusPurchaseOptions(await entitlementGateway.listPlusPurchaseOptions());
@@ -109,7 +137,8 @@ export function MeetingClockProvider({ children }: PropsWithChildren) {
       ]);
       const nextPreference = savedPreference ?? 'automatic';
       const nextLocale = resolveLocale(nextPreference, localeSource.getDeviceLanguageCodes());
-      const plus = await entitlementGateway.isPlus();
+      const status = await entitlementGateway.getPlusStatus({ forceRefresh: true });
+      const plus = status.isPlus;
       const limit = plus ? PLUS_HISTORY_LIMIT : FREE_HISTORY_LIMIT;
 
       if (!mounted) {
@@ -119,6 +148,7 @@ export function MeetingClockProvider({ children }: PropsWithChildren) {
       setLanguagePreferenceState(nextPreference);
       setLocale(nextLocale);
       setTimerConfigState(savedConfig ?? DEFAULT_TIMER_CONFIG);
+      setPlusStatus(status);
       setIsPlus(plus);
       setCanShowAds(await adsGateway.canShowAds(plus));
       setPlusPurchaseOptions(await entitlementGateway.listPlusPurchaseOptions());
@@ -132,6 +162,26 @@ export function MeetingClockProvider({ children }: PropsWithChildren) {
       mounted = false;
     };
   }, [adsGateway, entitlementGateway, localeSource, sessionRepository, settingsRepository]);
+
+  useEffect(() => {
+    if (!ready) {
+      return undefined;
+    }
+
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      if (nextState !== 'active') {
+        return;
+      }
+
+      refreshEntitlements({ forceRefresh: true })
+        .then(refreshHistory)
+        .catch(() => undefined);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [ready, refreshEntitlements, refreshHistory]);
 
   const setLanguagePreference = useCallback(
     async (value: LanguagePreference) => {
@@ -258,6 +308,45 @@ export function MeetingClockProvider({ children }: PropsWithChildren) {
     }
   }, [entitlementGateway, refreshEntitlements, refreshHistory]);
 
+  const manageSubscription = useCallback(async () => {
+    setPurchaseStatus('loading');
+
+    try {
+      const status = await entitlementGateway.getPlusStatus();
+      setPlusStatus(status);
+
+      if (!status.managementUrl) {
+        setPurchaseStatus('managementUnavailable');
+        return;
+      }
+
+      await Linking.openURL(status.managementUrl);
+      setPurchaseStatus('managementOpened');
+    } catch {
+      setPurchaseStatus('error');
+    }
+  }, [entitlementGateway]);
+
+  const refreshPurchaseStatus = useCallback(async (options: { showFeedback?: boolean } = {}) => {
+    const showFeedback = options.showFeedback ?? true;
+
+    if (showFeedback) {
+      setPurchaseStatus('loading');
+    }
+
+    try {
+      await refreshEntitlements({ forceRefresh: true });
+      await refreshHistory();
+      if (showFeedback) {
+        setPurchaseStatus('statusRefreshed');
+      }
+    } catch {
+      if (showFeedback) {
+        setPurchaseStatus('error');
+      }
+    }
+  }, [refreshEntitlements, refreshHistory]);
+
   const value = useMemo<MeetingClockContextValue>(
     () => ({
       ready,
@@ -277,11 +366,14 @@ export function MeetingClockProvider({ children }: PropsWithChildren) {
       resetActiveSession: () => saveAndCloseSession('reset'),
       refreshHistory,
       isPlus,
+      plusStatus,
       plusPurchaseOptions,
       purchaseStatus,
       purchasesMode,
       purchasePlus,
       restorePurchases,
+      manageSubscription,
+      refreshPurchaseStatus,
       setMockPlus,
       canShowAds,
     }),
@@ -292,13 +384,16 @@ export function MeetingClockProvider({ children }: PropsWithChildren) {
       isPlus,
       languagePreferenceState,
       locale,
+      manageSubscription,
       pauseActiveSession,
+      plusStatus,
       plusPurchaseOptions,
       purchasePlus,
       purchaseStatus,
       purchasesMode,
       ready,
       refreshHistory,
+      refreshPurchaseStatus,
       restartActiveSession,
       restorePurchases,
       resumeActiveSession,
