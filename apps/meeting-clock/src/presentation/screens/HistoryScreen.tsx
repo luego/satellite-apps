@@ -11,6 +11,16 @@ import { colors, radii, shadows, spacing, typography } from '../theme/colors';
 
 export function HistoryScreen() {
   const { t, history, refreshHistory, locale } = useMeetingClock();
+  const totalSeconds = history.reduce((total, session) => total + session.durationSeconds, 0);
+  const totalMinutes = Math.round(totalSeconds / 60);
+  const totalHours = Math.floor(totalMinutes / 60);
+  const remainingMinutes = totalMinutes % 60;
+  const totalDurationLabel =
+    totalHours === 0
+      ? t('minutesShort', { count: totalMinutes })
+      : remainingMinutes === 0
+        ? t('hoursShort', { count: totalHours })
+        : t('hoursMinutesShort', { hours: totalHours, minutes: remainingMinutes });
 
   useFocusEffect(
     useCallback(() => {
@@ -22,10 +32,7 @@ export function HistoryScreen() {
     <ScreenShell title={t('historyTitle')}>
       <View style={styles.summaryCard}>
         <Text style={styles.summaryLabel}>{t('historyTotalFocusToday')}</Text>
-        <Text style={styles.summaryValue}>
-          {(history.reduce((total, session) => total + session.durationSeconds, 0) / 3600).toFixed(1)}
-          <Text style={styles.summaryUnit}> hrs</Text>
-        </Text>
+        <Text style={styles.summaryValue}>{totalDurationLabel}</Text>
         <View style={styles.summaryTrack}>
           <View style={styles.summaryFill} />
         </View>
@@ -118,13 +125,9 @@ const styles = StyleSheet.create({
   summaryValue: {
     color: colors.primarySoft,
     fontFamily: 'monospace',
-    fontSize: 44,
+    fontSize: 40,
     fontWeight: '700',
     marginTop: spacing.sm,
-  },
-  summaryUnit: {
-    color: colors.ink,
-    fontSize: 18,
   },
   summaryTrack: {
     backgroundColor: colors.divider,

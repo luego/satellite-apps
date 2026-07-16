@@ -21,5 +21,7 @@ describe('localization', () => {
   it('interpolates values in the selected locale', () => {
     expect(translate('en', 'minutesShort', { count: 15 })).toBe('15 min');
     expect(translate('es', 'minutesShort', { count: 15 })).toBe('15 min');
+    expect(translate('en', 'hoursShort', { count: 2 })).toBe('2 h');
+    expect(translate('es', 'hoursMinutesShort', { hours: 1, minutes: 17 })).toBe('1 h 17 min');
   });
 });

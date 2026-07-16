@@ -20,6 +20,8 @@ export const es = {
   startTimer: 'Iniciar temporizador',
   presetsLabel: 'Preajustes',
   minutesShort: '{{count}} min',
+  hoursShort: '{{count}} h',
+  hoursMinutesShort: '{{hours}} h {{minutes}} min',
   adsMockLabel: 'Espacio de anuncio',
   adsMockBody: 'Los anuncios aparecen aquí en una versión de desarrollo y nunca durante el temporizador activo.',
   plusActive: 'Plus activo',

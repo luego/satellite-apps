@@ -18,6 +18,8 @@ export const en = {
   startTimer: 'Start timer',
   presetsLabel: 'Presets',
   minutesShort: '{{count}} min',
+  hoursShort: '{{count}} h',
+  hoursMinutesShort: '{{hours}} h {{minutes}} min',
   adsMockLabel: 'Ad placement',
   adsMockBody: 'Ads appear here in a development build and never during the active timer.',
   plusActive: 'Plus active',
