@@ -16,6 +16,9 @@ const config: ExpoConfig = {
   ios: {
     bundleIdentifier: 'com.luegodev.meetingclock',
     icon: './assets/expo.icon',
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+    },
   },
   extra: {
     eas: {
